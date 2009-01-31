@@ -10,6 +10,7 @@ SOURCES = graphiqu_enis.c
 OBJECTS = $(SOURCES:.c=.o)
 
 LIBRARY = libsimplified_graphics.a
+CUSTOM_LDFLAGS = -L. -lsimplified_graphics
 
 all: $(OBJECTS) simple_test demo
 
@@ -18,13 +19,18 @@ $(LIBRARY): $(OBJECTS)
 $(OBJECTS): $(SOURCES)
 	gcc $(CFLAGS) -c $<
 
-simple_test: simple_test.c $(OBJECTS)
+simple_test: simple_test.c $(LIBRARY)
 	gcc $(CFLAGS) -c simple_test.c
-	gcc -o simple_test simple_test.o graphiqu_enis.o $(LDFLAGS)
+	gcc -o simple_test simple_test.o $(CUSTOM_LDFLAGS) $(LDFLAGS)
 
-demo: demo.c $(OBJECTS)
+demo: demo.c $(LIBRARY)
 	gcc $(CFLAGS) -c demo.c
-	gcc -o demo demo.o graphiqu_enis.o $(LDFLAGS)
+	gcc -o demo demo.o $(CUSTOM_LDFLAGS) $(LDFLAGS)
+
+$(LIBRARY): $(OBJECTS)
+	rm -f $@
+	ar rcs $@ $(OBJECTS)
+	ranlib $@
 
 clean:
 	rm -f *.o *~ simple_test demo
