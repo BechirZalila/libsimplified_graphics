@@ -22,22 +22,12 @@ $(EXECUTABLES): $(FICHIERS_UTILISATEUR) $(LIBRARY)
 	gcc $(CFLAGS) -c $@.c
 	gcc -o $@ $@.o $(CUSTOM_LDFLAGS) $(LDFLAGS)
 
-# BEGIN: to be deleted in user version
-$(OBJECTS): $(SOURCES)
-	gcc $(CFLAGS) -c $<
-
-$(LIBRARY): $(OBJECTS)
-	rm -f $@
-	ar rcs $@ $(OBJECTS)
-	ranlib $@
-# END: to be deleted in user version
-
 dist: allclean
 	rm -rf libsimplified_graphics
 	mkdir libsimplified_graphics
 	cp Makefile $(FICHIERS_UTILISATEUR) $(SOURCES) $(HEADERS) \
 	  libsimplified_graphics
-	$(MAKE) -C libsimplified_graphics $(LIBRARY)
+	$(MAKE) -f ../mk.dev -C libsimplified_graphics $(LIBRARY)
 	$(MAKE) -C libsimplified_graphics clean
 	tar czvf libsimplified_graphics.tar.gz libsimplified_graphics
 
