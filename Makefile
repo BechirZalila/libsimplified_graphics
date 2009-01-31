@@ -25,7 +25,3 @@ $(EXECUTABLES): $(FICHIERS_UTILISATEUR) $(LIBRARY)
 clean:
 	rm -f *.o *~ $(EXECUTABLES)
 	rm -rf *.dSYM 
-
-allclean: clean
-	rm -f $(LIBRARY)
-	rm -rf libsimplified_graphics

@@ -4,6 +4,10 @@
 
 include Makefile
 
+allclean: clean
+	rm -f $(LIBRARY)
+	rm -rf libsimplified_graphics*
+
 dist: allclean
 	rm -rf libsimplified_graphics
 	mkdir libsimplified_graphics
