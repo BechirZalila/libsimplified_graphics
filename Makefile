@@ -22,15 +22,6 @@ $(EXECUTABLES): $(FICHIERS_UTILISATEUR) $(LIBRARY)
 	gcc $(CFLAGS) -c $@.c
 	gcc -o $@ $@.o $(CUSTOM_LDFLAGS) $(LDFLAGS)
 
-dist: allclean
-	rm -rf libsimplified_graphics
-	mkdir libsimplified_graphics
-	cp Makefile $(FICHIERS_UTILISATEUR) $(SOURCES) $(HEADERS) \
-	  libsimplified_graphics
-	$(MAKE) -f ../mk.dev -C libsimplified_graphics $(LIBRARY)
-	$(MAKE) -C libsimplified_graphics clean
-	tar czvf libsimplified_graphics.tar.gz libsimplified_graphics
-
 clean:
 	rm -f *.o *~ $(EXECUTABLES)
 	rm -rf *.dSYM 
