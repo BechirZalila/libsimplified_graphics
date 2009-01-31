@@ -2,6 +2,10 @@
 # $Id: Makefile 1103 2009-01-12 21:19:36Z zalila $
 ###########################################################################
 
+FICHIERS_UTILISATEUR = simple_test.c demo.c
+
+EXECUTABLES = $(FICHIERS_UTILISATEUR:.c=)
+
 CFLAGS  := -g -Wall -Werror
 LDFLAGS := -L/usr/X11/lib -lX11 -lpthread
 
@@ -12,26 +16,35 @@ OBJECTS = $(SOURCES:.c=.o)
 LIBRARY = libsimplified_graphics.a
 CUSTOM_LDFLAGS = -L. -lsimplified_graphics
 
-all: $(OBJECTS) simple_test demo
+all: $(EXECUTABLES)
 
-$(LIBRARY): $(OBJECTS)
+$(EXECUTABLES): $(FICHIERS_UTILISATEUR) $(LIBRARY)
+	gcc $(CFLAGS) -c $@.c
+	gcc -o $@ $@.o $(CUSTOM_LDFLAGS) $(LDFLAGS)
 
+# BEGIN: to be deleted in user version
 $(OBJECTS): $(SOURCES)
 	gcc $(CFLAGS) -c $<
-
-simple_test: simple_test.c $(LIBRARY)
-	gcc $(CFLAGS) -c simple_test.c
-	gcc -o simple_test simple_test.o $(CUSTOM_LDFLAGS) $(LDFLAGS)
-
-demo: demo.c $(LIBRARY)
-	gcc $(CFLAGS) -c demo.c
-	gcc -o demo demo.o $(CUSTOM_LDFLAGS) $(LDFLAGS)
 
 $(LIBRARY): $(OBJECTS)
 	rm -f $@
 	ar rcs $@ $(OBJECTS)
 	ranlib $@
+# END: to be deleted in user version
+
+dist: allclean
+	rm -rf libsimplified_graphics
+	mkdir libsimplified_graphics
+	cp Makefile $(FICHIERS_UTILISATEUR) $(SOURCES) $(HEADERS) \
+	  libsimplified_graphics
+	$(MAKE) -C libsimplified_graphics $(LIBRARY)
+	$(MAKE) -C libsimplified_graphics clean
+	tar czvf libsimplified_graphics.tar.gz libsimplified_graphics
 
 clean:
-	rm -f *.o *~ simple_test demo
+	rm -f *.o *~ $(EXECUTABLES)
 	rm -rf *.dSYM 
+
+allclean: clean
+	rm -f $(LIBRARY)
+	rm -rf libsimplified_graphics
