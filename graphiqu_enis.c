@@ -50,6 +50,10 @@ void Initialisation_Graphique (float xmin,
 			       float ymax)
 {
   XEvent e;
+  unsigned int line_width = 1;
+  int line_style = LineSolid;
+  int cap_style = CapRound;
+  int join_style = JoinRound;
 
   /* Vérifier que les dimensions données sont cohérentes */
 
@@ -100,6 +104,12 @@ void Initialisation_Graphique (float xmin,
   gc = XCreateGC (d, RootWindow (d, s), 0, NULL);
   XSetBackground (d, gc, WhitePixel (d, s));
   XSetForeground (d, gc, BlackPixel (d, s));
+
+  /* Propriétés des lignes tracées */
+
+  XSetLineAttributes(d, gc, 
+		     line_width, line_style,
+		     cap_style, join_style);
 
   /* Essayer de trouver une police de caractères */
 
