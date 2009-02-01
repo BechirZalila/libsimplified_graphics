@@ -4,6 +4,13 @@
 
 include Makefile
 
+HEADERS = graphiqu_enis.h
+SOURCES = graphiqu_enis.c
+OBJECTS = $(SOURCES:.c=.o)
+LIBRARY = libsimplified_graphics.a
+
+$(EXECUTABLES): $(LIBRARY)
+
 allclean: clean
 	rm -f $(LIBRARY)
 	rm -rf libsimplified_graphics*
@@ -14,6 +21,7 @@ dist: allclean
 	cp Makefile $(FICHIERS_UTILISATEUR) $(SOURCES) $(HEADERS) \
 	  libsimplified_graphics
 	$(MAKE) -f ../mk.dev -C libsimplified_graphics $(LIBRARY)
+	cd libsimplified_graphics && rm -f $(SOURCES) && cd ..
 	$(MAKE) -C libsimplified_graphics clean
 	tar czvf libsimplified_graphics.tar.gz libsimplified_graphics
 
