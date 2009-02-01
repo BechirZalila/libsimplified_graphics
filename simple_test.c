@@ -15,7 +15,7 @@ int main (void) {
   char tmpl [] = "Hello There @ '%s pixels'";
 
 
-  /* Initialisation de l'environnement grahique avec les coordonnée
+  /* Initialisation de l'environnement grahique avec les coordonnées
      extrêmales. */
   Initialisation_Graphique (-100, -150.7, 400.5, 300);
 
@@ -41,7 +41,7 @@ int main (void) {
   }
 
   /* Affichange de 16 cercles avec les 16 premieres couleurs et de 16
-     autres disques avecs un ordre de couleurs inverse. */
+     autres disques avec un ordre de couleurs inverse. */
   for (i = 0; i < 16; i++) {
     Cercle (-80.0 + i * 30, 230.0, 15, i);
     Disque (-80.0 + i * 30, 260.0, 15, i);
@@ -86,8 +86,8 @@ int main (void) {
   }
 
   /* Affichage de quelques textes avec des tailles et des couleurs
-     différentes. Traçages de rectangles ayant la même hauteur du
-     texte à chaque fois. */
+     différentes. Traçage de rectangles ayant la même hauteur du texte
+     à chaque fois. */
   
   Hauteur_Texte (8);
   itos (8, size);
