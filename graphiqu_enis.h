@@ -10,7 +10,7 @@
    bibliothèque). Aussi, la fonction 'Lit' n'a pas été implantée car
    elle introduit des dépendances jugées de trop pour le peu de
    fonctionnalités qu'elle ajoute. Le code source de la nouvelle
-   bibliothèque a été complétement récrit car les sources de
+   bibliothèque a été complétement réécrit car les sources de
    libgraphiqu ne sont pas disponibles.
 
    http://www.infres.enst.fr/~danzart/fiches/graphique/graphique_contenu.html
@@ -208,6 +208,12 @@ extern void EcritXY (float x,
 extern void Attente (void);
 /* 
    Bloque jusqu'à ce que l'utilistateur tape ENTREE.
+*/
+
+extern void Graphiqu_ENIS_Version (void);
+/*
+  Affiche la version de la bibliothèque et des informations de
+  Copyright.
 */
 
 #endif /* __GRAPHIQU_ENIS_H__ */

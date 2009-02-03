@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <string.h>
 #include <X11/Xlib.h>
 #include <assert.h>
@@ -10,39 +11,58 @@
 #define MAX(x, y) (x > y ? x : y)
 #define MIN(x, y) (x < y ? x : y)
 
+char graphiqu_enis_version_string [] = "1.0";
+
 int initialized = 0;
 
 Display *d;  /* Le display */
 int s;       /* L'écran */
 Window w;    /* La fenêtre */
-GC gc;
+GC gc;       /* Le contexte graphique */
 Pixmap bkp;  /* Une sauvegarde de ce qu'il y a sur la fenêtre */
 
 unsigned int w_width, w_height;   /* Dimensions de la fenêtre */
 float _xmin, _ymin, _xmax, _ymax; /* Sauvegardes des coordonnées */
 
-float _cur_x, _cur_y;
+float _cur_x, _cur_y; /* Position courante (utile pour l'écriture de
+			 texte). */
 
-XFontStruct* font_info = NULL;
+XFontStruct* font_info = NULL; /* Police courante */
+
+/* Nom générique de police redimensionnable. Le '%d' sera remplacé
+   pour correspondre à la taille choisie par l'utilisateur. */
 char* font_name_template 
   = "-adobe-helvetica-medium-r-normal--0-%d-75-75-p-0-iso8859-1";
-int hauteur_texte = 10;
-void sync_font_info (void);
+
+int hauteur_texte = 10; /* Hauteur par défaut du texte */
+
+void sync_font_info (void); 
+/* Garantit la cohérence entre hauteur_texte et font_info */
 
 Colormap colmap;  /* Table des couleurs système */
 
 XColor TableCoul [256];
 /* Table des couleurs. Les 16 premières valeurs seront remplies par
-   les couleurs usuelles. Le reste peut être alloué dynamiquement puis
-   utilisé par l'utilisteur. */
+   les couleurs usuelles. Les 240 couleurs restantes forment un
+   dégradé du vert au bleu-verdatre en passant par le jaune, le rouge,
+   le violet et le bleu. Toutes les couleurs peuvent être modifiées
+   par l'utilisateur. */
 
 void init_couleurs (void);
+/* Initialise les 256 couleurs */
 
 pthread_t main_l;
+/* Thread exécutant la boucle d'évènements */
 
 void main_loop (void);
 /* Boucle principale de la fenêtre graphique (sera exécutée dans un
    thread indépendant). */
+
+void Graphiqu_ENIS_Version (void) {
+  printf ("Bibliothèque graphique simplifiée de l'ENIS. Version %s\n",
+	  graphiqu_enis_version_string);
+  printf ("Copyright 2009 Bechir Zalila (bechir.zalila@aist.enst.fr)\n");
+}
 
 void Initialisation_Graphique (float xmin, 
 			       float ymin, 
@@ -65,11 +85,22 @@ void Initialisation_Graphique (float xmin,
   _xmax = xmax;
   _ymax = ymax;
 
-  w_width = (unsigned int) (xmax - xmin);
-  w_height = (unsigned int) (ymax - ymin);
+  w_width = (unsigned int) (xmax - xmin + 1);
+  w_height = (unsigned int) (ymax - ymin + 1);
 
   _cur_x = _xmin;
   _cur_y = _ymin;
+
+  /* Message de version et de copyright */
+
+  Graphiqu_ENIS_Version ();
+
+  /* Initialisation de XLib avec le support multi-tâches */
+
+  if (!XInitThreads ()) {
+    printf ("Impossible d'initialiser XLib avec le support multi-tâches\n");
+    exit (1);
+  }
 
   /* Ouvrir la connexion avec le serveur graphique */
  
@@ -78,7 +109,11 @@ void Initialisation_Graphique (float xmin,
     printf ("Impossible d'ouvrir l'affichage\n");
     exit (1);
   }
+  
+  /* Verrouillage du display */
 
+  XLockDisplay (d);
+  
   /* Récupération de l'écran par défaut */
   
   s = XDefaultScreen (d);
@@ -107,9 +142,9 @@ void Initialisation_Graphique (float xmin,
 
   /* Propriétés des lignes tracées */
 
-  XSetLineAttributes(d, gc, 
-		     line_width, line_style,
-		     cap_style, join_style);
+  XSetLineAttributes (d, gc, 
+		      line_width, line_style,
+		      cap_style, join_style);
 
   /* Essayer de trouver une police de caractères */
 
@@ -122,18 +157,18 @@ void Initialisation_Graphique (float xmin,
 		       RootWindow (d, s),
 		       w_width,
 		       w_height,
-		       DefaultDepth(d, DefaultScreen(d)));
+		       DefaultDepth (d, DefaultScreen (d)));
   XSetForeground (d, gc, WhitePixel (d, s));
-  XFillRectangle(d, bkp, gc, 0, 0, w_width, w_height);
+  XFillRectangle (d, bkp, gc, 0, 0, w_width, w_height);
   XSetForeground (d, gc, BlackPixel (d, s));
 
-  /* Initialisation des 16 premières couleurs */
+  /* Initialisation des couleurs */
 
   init_couleurs ();
 
   /* Afficher la fenêtre */
   
-  XMapWindow(d, w);
+  XMapWindow (d, w);
   XFlush (d);
 
   /* Se bloquer jusqu'à l'apparition de la fenêtre */
@@ -145,24 +180,28 @@ void Initialisation_Graphique (float xmin,
     }
   }
 
+  /* Déverrouillage du disaply */
+
+  XUnlockDisplay (d);
+
   initialized = 1;
 
-  /* Lancement de l'event dispatch thread de la fenêtre. DESACTIVE
-     pour le moment car les routines de X ne sont pas thread-safe. */
-#ifndef __APPLE__
+  /* Lancement de l'event dispatch thread de la fenêtre. */
+
   pthread_create (&main_l, NULL, (void *) main_loop, NULL);
-#endif
 }
 
 void Fin_Graphique (void)
 {
   assert (initialized);
 
+  XLockDisplay (d);
   XFreePixmap (d, bkp);
   XFreeGC (d, gc);
   XDestroyWindow (d, w);
   XFlush (d);
   XCloseDisplay (d);
+  XUnlockDisplay (d);
 
   initialized = 0;
 }
@@ -173,10 +212,12 @@ void Efface (void)
 
   /* Traçage d'un rectangle blanc */
 
+  XLockDisplay (d);
   XSetForeground (d, gc, WhitePixel (d, s));
-  XFillRectangle(d, w, gc, 0, 0, w_width, w_height);
-  XFillRectangle(d, bkp, gc, 0, 0, w_width, w_height);
+  XFillRectangle (d, w, gc, 0, 0, w_width, w_height);
+  XFillRectangle (d, bkp, gc, 0, 0, w_width, w_height);
   XFlush (d);
+  XUnlockDisplay (d);
 }
 
 void Trait (float x1, 
@@ -192,12 +233,13 @@ void Trait (float x1,
 
   assert (initialized);
 
+  XLockDisplay (d);
   XSetForeground (d, gc, TableCoul [couleur].pixel);
-
   XDrawLine (d, w, gc, _x1, _y1, _x2, _y2);
   XDrawLine (d, bkp, gc, _x1, _y1, _x2, _y2);
   XFlush (d);
-  
+  XUnlockDisplay (d);
+
 }
 
 void Croix (float x, 
@@ -210,12 +252,14 @@ void Croix (float x,
 
   assert (initialized);
 
+  XLockDisplay (d);
   XSetForeground (d, gc, TableCoul [couleur].pixel);
   XDrawLine (d, w, gc, _x - dim, _y - dim, _x + dim, _y + dim);
   XDrawLine (d, bkp, gc, _x - dim, _y - dim, _x + dim, _y + dim);
   XDrawLine (d, w, gc, _x - dim, _y + dim, _x + dim, _y - dim);
   XDrawLine (d, bkp, gc, _x - dim, _y + dim, _x + dim, _y - dim);
   XFlush (d);
+  XUnlockDisplay (d);
 }
 
 void Point (float x, 
@@ -227,10 +271,12 @@ void Point (float x,
 
   assert (initialized);
 
+  XLockDisplay (d);
   XSetForeground (d, gc, TableCoul [couleur].pixel);
-  XDrawPoint(d, w, gc, _x, _y);
-  XDrawPoint(d, bkp, gc, _x, _y);
+  XDrawPoint (d, w, gc, _x, _y);
+  XDrawPoint (d, bkp, gc, _x, _y);
   XFlush (d);
+  XUnlockDisplay (d);
 }
 
 void Cercle (float x, 
@@ -242,16 +288,19 @@ void Cercle (float x,
   float _y = _ymax - y;
 
   assert (initialized);
+
+  XLockDisplay (d);
   XSetForeground (d, gc, TableCoul [couleur].pixel);
-  XDrawArc(d, w, gc,
-	   _x - rayon, _y - rayon,  /* Point de départ */ 
-	   2 * rayon, 2 * rayon,    /* Point d'arrivée */
-	   0, 360*64);              /* Angles (en 64e de degré) */
-  XDrawArc(d, bkp, gc,
-	   _x - rayon, _y - rayon,  /* Point de départ */ 
-	   2 * rayon, 2 * rayon,    /* Point d'arrivée */
-	   0, 360*64);              /* Angles (en 64e de degré) */
+  XDrawArc (d, w, gc,
+	    _x - rayon, _y - rayon,  /* Point de départ */ 
+	    2 * rayon, 2 * rayon,    /* Point d'arrivée */
+	    0, 360*64);              /* Angles (en 64e de degré) */
+  XDrawArc (d, bkp, gc,
+	    _x - rayon, _y - rayon,  /* Point de départ */ 
+	    2 * rayon, 2 * rayon,    /* Point d'arrivée */
+	    0, 360*64);              /* Angles (en 64e de degré) */
   XFlush (d);
+  XUnlockDisplay (d);
 }
 
 void Disque (float x, 
@@ -263,16 +312,19 @@ void Disque (float x,
   float _y = _ymax - y;
 
   assert (initialized);
+
+  XLockDisplay (d);
   XSetForeground (d, gc, TableCoul [couleur].pixel);
-  XFillArc(d, w, gc,
-	   _x - rayon, _y - rayon,  /* Point de départ */ 
-	   2 * rayon, 2 * rayon,    /* Point d'arrivée */
-	   0, 360*64);              /* Angles (en 64e de degré) */
-  XFillArc(d, bkp, gc,
-	   _x - rayon, _y - rayon,  /* Point de départ */ 
-	   2 * rayon, 2 * rayon,    /* Point d'arrivée */
-	   0, 360*64);              /* Angles (en 64e de degré) */
+  XFillArc (d, w, gc,
+	    _x - rayon, _y - rayon,  /* Point de départ */ 
+	    2 * rayon, 2 * rayon,    /* Point d'arrivée */
+	    0, 360*64);              /* Angles (en 64e de degré) */
+  XFillArc (d, bkp, gc,
+	    _x - rayon, _y - rayon,  /* Point de départ */ 
+	    2 * rayon, 2 * rayon,    /* Point d'arrivée */
+	    0, 360*64);              /* Angles (en 64e de degré) */
   XFlush (d);
+  XUnlockDisplay (d);
 }
 
 void DrawPoly (int nbr_points, 
@@ -285,10 +337,12 @@ void DrawPoly (int nbr_points,
   assert (initialized);
   assert (nbr_points > 1);
 
+  XLockDisplay (d);
   XSetForeground (d, gc, TableCoul [couleur].pixel);
 
   for (i = 0; i < nbr_points - 1; i++) {
     /* Tracer une ligne entre le point i et le point i + 1 */
+
     _x1 = poly_points [2 * i] - _xmin;
     _y1 = _ymax - poly_points [2 * i + 1];
     _x2 = poly_points [2 * i + 2] - _xmin;
@@ -307,6 +361,7 @@ void DrawPoly (int nbr_points,
   XDrawLine (d, bkp, gc, _x1, _y1, _x2, _y2);
   
   XFlush (d);  
+  XUnlockDisplay (d);
 }
 
 void FillPoly (int nbr_points, 
@@ -326,10 +381,12 @@ void FillPoly (int nbr_points,
     pol [i].y = _ymax - poly_points [2 * i + 1];
   }
 
+  XLockDisplay (d);
   XSetForeground (d, gc, TableCoul [couleur].pixel);
   XFillPolygon (d, w, gc, pol, nbr_points, Complex, CoordModeOrigin);
   XFillPolygon (d, bkp, gc, pol, nbr_points, Complex, CoordModeOrigin);
   XFlush (d);
+  XUnlockDisplay (d);
 
   free (pol);
 }
@@ -356,7 +413,7 @@ void DrawRectangle (float x1,
     _x2 = x2 - _xmin,
     _y1 = _ymax - y1,
     _y2 = _ymax - y2;
-
+  
   float _x_M = MAX (_x1, _x2),
     _x_m = MIN (_x1, _x2),
     _y_M = MAX (_y1, _y2),
@@ -364,10 +421,12 @@ void DrawRectangle (float x1,
     
   assert (initialized);
 
+  XLockDisplay (d);
   XSetForeground (d, gc, TableCoul [couleur].pixel);
   XDrawRectangle (d, w, gc, _x_m, _y_m, (_x_M - _x_m), (_y_M - _y_m));
   XDrawRectangle (d, bkp, gc, _x_m, _y_m, (_x_M - _x_m), (_y_M - _y_m));  
   XFlush (d);
+  XUnlockDisplay (d);
 }
 
 void FillRectangle (float x1, 
@@ -388,10 +447,12 @@ void FillRectangle (float x1,
     
   assert (initialized);
   
+  XLockDisplay (d);
   XSetForeground (d, gc, TableCoul [couleur].pixel);
   XFillRectangle (d, w, gc, _x_m, _y_m, (_x_M - _x_m), (_y_M - _y_m));
   XFillRectangle (d, bkp, gc, _x_m, _y_m, (_x_M - _x_m), (_y_M - _y_m));  
   XFlush (d);
+  XUnlockDisplay (d);
 }
 
 void CreateColorRGB (int numero,
@@ -406,7 +467,9 @@ void CreateColorRGB (int numero,
   TableCoul [numero].blue  = B * 256;
   TableCoul [numero].flags = DoRed | DoGreen | DoBlue;
     
+  XLockDisplay (d);
   XAllocColor (d, colmap, &TableCoul [numero]);
+  XUnlockDisplay (d);
 }
 
 void Hauteur_Texte (float hauteur)
@@ -443,10 +506,13 @@ void EcritXY (float x,
     _y = _ymax - y;
   
   assert (initialized);
+
+  XLockDisplay (d);
   XSetForeground (d, gc, TableCoul [couleur].pixel);
   XDrawString (d, w, gc, _x, _y, chaine, strlen (chaine));
   XDrawString (d, bkp, gc, _x, _y, chaine, strlen (chaine));
   XFlush (d);
+  XUnlockDisplay (d);
 }
 
 void Ecrit (char *chaine,
@@ -468,18 +534,42 @@ void Attente (void)
 
 void main_loop (void) {
   XEvent e;
+  int evenement_present;
 
   while (initialized) {
-    XNextEvent (d, &e);
-    
+    XLockDisplay (d);
+
+    /* Voir s'il y a des évènements en attente */
+    evenement_present = XPending (d);
+
+    if (evenement_present) {
+      /* S'il y a des evènements, on les récupère */
+
+      XNextEvent (d, &e);
+      XUnlockDisplay (d);
+    } else {
+      /* S'il n'y a pas de nouveaux évènement, on fait dormir le
+	 thread pendant une brève durée (pour éviter d'occuper 100% du
+	 CPU) et on continue la boucle. On estime que 0.1 seconde est
+	 suffisante pour garantir un affichage agréable de la
+	 fenêtre.
+      */
+      
+      XUnlockDisplay (d);
+      usleep (100000);
+      continue;
+    }
+
     if (e.type == Expose) {
       /* Si une partie de la fenêtre doit être redessinée, on la copie
 	 depuis la table de pixel de sauvegarde. */
 
+      XLockDisplay (d);
       XCopyArea (d, bkp, w, gc,
 		 e.xexpose.x, e.xexpose.y,
 		 e.xexpose.width, e.xexpose.height,
 		 e.xexpose.x, e.xexpose.y);
+      XUnlockDisplay (d);
     } 
   }
 }
@@ -506,23 +596,36 @@ void init_couleurs (void) {
   int i;
   XColor exact;
 
+  /* Pas de couleurs. On divise l'intervalle [0, 255] en 41
+     sous-intervalles pour pouvoir avoir un dégradé réaliste sur 240
+     couleurs. */
   int steps [42] = {0, 6, 12, 18, 25, 31, 37, 43, 50, 56, 62, 68, 75, 81, 
 		    87, 93, 100, 106, 112, 118, 125, 131, 137, 143, 150, 156,
 		    162, 168, 175, 181, 187, 193, 200, 206, 212, 218, 225, 
 		    231, 237, 243, 249, 255};
 
-  enum p_states {i_green, s_green_i_red, 
-		 s_red_d_green, s_red_i_blue, 
-		 s_blue_d_red, s_blue_i_green};
+  /* États de la machines à états qui génère le dégradé */
+  enum p_states {i_green,         /* Augmente G à R et B nuls */
+		 s_green_i_red,   /* Augmente R à G maximum et B nul */
+		 s_red_d_green,   /* Diminue G à R maximum et B nul */
+		 s_red_i_blue,    /* Augmente B à R maximum et G nul */
+		 s_blue_d_red,    /* Diminue R à B maximum et G nul */
+		 s_blue_i_green}; /* Augmente G à B maximum et R nul */
 
   enum p_states cur_state = i_green;
   int count, step;
-
+  
+  XLockDisplay (d);
   colmap = DefaultColormap (d, s);
   
+  /* Construction des 16 premières couleurs */
+
   for (i = 0; i < 16; i++) {
     XAllocNamedColor (d, colmap, couleursPredef [i], &TableCoul [i], &exact);
   }
+  XUnlockDisplay (d);
+
+  /* Construction du dégradé sur les 240 positions restantes */
 
   count = 16;
   step = 12;
@@ -539,6 +642,7 @@ void init_couleurs (void) {
 	  step++;
 	}
 	break;
+
       case s_green_i_red :
 	CreateColorRGB (count, steps [step], steps [41], steps [0]);
 	if (step == 41) {
@@ -548,6 +652,7 @@ void init_couleurs (void) {
 	  step++;
 	}
 	break;
+
       case s_red_d_green :
 	CreateColorRGB (count, steps [41], steps [step], steps [0]);
 	if (step == 0) {
@@ -557,6 +662,7 @@ void init_couleurs (void) {
 	  step--;
 	}
 	break;
+
       case s_red_i_blue :
 	CreateColorRGB (count, steps [41], steps [0], steps [step]);
 	if (step == 41) {
@@ -566,6 +672,7 @@ void init_couleurs (void) {
 	  step++;
 	}
 	break;
+
       case s_blue_d_red :
 	CreateColorRGB (count, steps [step], steps [0], steps [41]);
 	if (step == 0) {
@@ -575,6 +682,7 @@ void init_couleurs (void) {
 	  step--;
 	}
 	break;
+
       case s_blue_i_green :
 	CreateColorRGB (count, steps [0], steps [step], steps [41]);
 	if (step == 41) {
@@ -595,18 +703,22 @@ void sync_font_info (void) {
 
   sprintf (the_font_name, font_name_template, hauteur_texte * 10);
 
+  XLockDisplay (d);
+
   if (font_info != NULL) {
     XFreeFont (d, font_info);
   }
 
-  font_info = XLoadQueryFont(d, the_font_name);
+  font_info = XLoadQueryFont (d, the_font_name);
 
   if (font_info == NULL) {
-    fprintf(stderr, "XLoadQueryFont: échec du chargement de"
+    XUnlockDisplay (d);
+    fprintf (stderr, "XLoadQueryFont: échec du chargement de"
 	    " la police de caractère '%s'\n", the_font_name);
     exit (1);
   }
   else {
-    XSetFont(d, gc, font_info->fid);
-  }  
+    XSetFont (d, gc, font_info->fid);
+    XUnlockDisplay (d);
+  }
 }
