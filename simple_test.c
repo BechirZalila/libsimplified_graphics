@@ -14,7 +14,6 @@ int main (void) {
   char size [5], msg [50];
   char tmpl [] = "Hello There @ '%s pixels'";
 
-
   /* Initialisation de l'environnement grahique avec les coordonnées
      extrêmales. */
   Initialisation_Graphique (-100, -150.7, 400.5, 300);

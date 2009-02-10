@@ -11,7 +11,10 @@
 #define MAX(x, y) (x > y ? x : y)
 #define MIN(x, y) (x < y ? x : y)
 
-char graphiqu_enis_version_string [] = "1.0";
+#define CX(x) (w_width * ((x) - _xmin) / (_xmax - _xmin))
+#define CY(y) (w_height - w_height * ((y) - _ymin) / (_ymax - _ymin))
+
+char graphiqu_enis_version_string [] = "1.1";
 
 int initialized = 0;
 
@@ -20,6 +23,11 @@ int s;       /* L'écran */
 Window w;    /* La fenêtre */
 GC gc;       /* Le contexte graphique */
 Pixmap bkp;  /* Une sauvegarde de ce qu'il y a sur la fenêtre */
+
+unsigned int requested_width = 0, requested_height = 0;
+/* Dimensions demandées par l'utilisateur. On peut par exemple avoir
+   des coordonnées qui s'étendent par exemple entre -1 et 1 alors que
+   la taille de la fenêtre est de 100 pixels */
 
 unsigned int w_width, w_height;   /* Dimensions de la fenêtre */
 float _xmin, _ymin, _xmax, _ymax; /* Sauvegardes des coordonnées */
@@ -64,6 +72,11 @@ void Graphiqu_ENIS_Version (void) {
   printf ("Copyright 2009 Bechir Zalila (bechir.zalila@aist.enst.fr)\n");
 }
 
+void Dimensions_Fenetre (int largeur, int hauteur) {
+  requested_width = largeur;
+  requested_height = hauteur;
+}
+
 void Initialisation_Graphique (float xmin, 
 			       float ymin, 
 			       float xmax, 
@@ -85,8 +98,17 @@ void Initialisation_Graphique (float xmin,
   _xmax = xmax;
   _ymax = ymax;
 
-  w_width = (unsigned int) (xmax - xmin + 1);
-  w_height = (unsigned int) (ymax - ymin + 1);
+  if (requested_width == 0) {
+    w_width = (unsigned int) (xmax - xmin);
+  } else {
+    w_width = requested_width;
+  }
+
+  if (requested_height == 0) {
+    w_height = (unsigned int) (ymax - ymin);
+  } else {
+    w_height = requested_height;
+  }
 
   _cur_x = _xmin;
   _cur_y = _ymin;
@@ -124,8 +146,8 @@ void Initialisation_Graphique (float xmin,
 			   RootWindow (d, s), 
 			   10, 
 			   10, 
-			   w_width, 
-			   w_height,
+			   w_width + 2, 
+			   w_height + 2,
 			   1, 
 			   BlackPixel (d, s), 
 			   WhitePixel (d, s));  
@@ -155,8 +177,8 @@ void Initialisation_Graphique (float xmin,
   
   bkp = XCreatePixmap (d,
 		       RootWindow (d, s),
-		       w_width,
-		       w_height,
+		       w_width + 2,
+		       w_height + 2,
 		       DefaultDepth (d, DefaultScreen (d)));
   XSetForeground (d, gc, WhitePixel (d, s));
   XFillRectangle (d, bkp, gc, 0, 0, w_width, w_height);
@@ -226,10 +248,10 @@ void Trait (float x1,
 	    float y2, 
 	    int couleur)
 {
-  float _x1 = x1 - _xmin;
-  float _y1 = _ymax - y1;
-  float _x2 = x2 - _xmin;
-  float _y2 = _ymax - y2;
+  float _x1 = CX (x1);
+  float _y1 = CY (y1);
+  float _x2 = CX (x2);
+  float _y2 = CY (y2);
 
   assert (initialized);
 
@@ -246,8 +268,8 @@ void Croix (float x,
 	    float y, 
 	    int couleur)
 {
-  float _x = x - _xmin;
-  float _y = _ymax - y;
+  float _x = CX (x);
+  float _y = CY (y);
   int dim = 3;
 
   assert (initialized);
@@ -266,8 +288,8 @@ void Point (float x,
 	    float y, 
 	    int couleur)
 {
-  float _x = x - _xmin;
-  float _y = _ymax - y;
+  float _x = CX (x);
+  float _y = CY (y);
 
   assert (initialized);
 
@@ -284,8 +306,8 @@ void Cercle (float x,
 	     int rayon, 
 	     int couleur)
 {
-  float _x = x - _xmin;
-  float _y = _ymax - y;
+  float _x = CX (x);
+  float _y = CY (y);
 
   assert (initialized);
 
@@ -308,8 +330,8 @@ void Disque (float x,
 	     int rayon, 
 	     int couleur)
 {
-  float _x = x - _xmin;
-  float _y = _ymax - y;
+  float _x = CX (x);
+  float _y = CY (y);
 
   assert (initialized);
 
@@ -343,20 +365,20 @@ void DrawPoly (int nbr_points,
   for (i = 0; i < nbr_points - 1; i++) {
     /* Tracer une ligne entre le point i et le point i + 1 */
 
-    _x1 = poly_points [2 * i] - _xmin;
-    _y1 = _ymax - poly_points [2 * i + 1];
-    _x2 = poly_points [2 * i + 2] - _xmin;
-    _y2 = _ymax - poly_points [2 * i + 3];
+    _x1 = CX (poly_points [2 * i]);
+    _y1 = CY (poly_points [2 * i + 1]);
+    _x2 = CX (poly_points [2 * i + 2]);
+    _y2 = CY (poly_points [2 * i + 3]);
     XDrawLine (d, w, gc, _x1, _y1, _x2, _y2);
     XDrawLine (d, bkp, gc, _x1, _y1, _x2, _y2);
   }
 
   /* Relier le dernier point au premier point */
   
-  _x1 = poly_points [2 * (nbr_points - 1)] - _xmin;
-  _y1 = _ymax - poly_points [2 * nbr_points - 1];
-  _x2 = poly_points [0] - _xmin;
-  _y2 = _ymax - poly_points [1];
+  _x1 = CX (poly_points [2 * (nbr_points - 1)]);
+  _y1 = CY (poly_points [2 * nbr_points - 1]);
+  _x2 = CX (poly_points [0]);
+  _y2 = CY (poly_points [1]);
   XDrawLine (d, w, gc, _x1, _y1, _x2, _y2);
   XDrawLine (d, bkp, gc, _x1, _y1, _x2, _y2);
   
@@ -377,8 +399,8 @@ void FillPoly (int nbr_points,
   pol = (XPoint *) malloc (nbr_points * sizeof (XPoint));
 
   for (i = 0; i < nbr_points; i++) {
-    pol [i].x = poly_points [2 * i] - _xmin;
-    pol [i].y = _ymax - poly_points [2 * i + 1];
+    pol [i].x = CX (poly_points [2 * i]);
+    pol [i].y = CY (poly_points [2 * i + 1]);
   }
 
   XLockDisplay (d);
@@ -409,10 +431,10 @@ void DrawRectangle (float x1,
 		    float y2, 
 		    int couleur)
 {
-  float _x1 = x1 - _xmin,
-    _x2 = x2 - _xmin,
-    _y1 = _ymax - y1,
-    _y2 = _ymax - y2;
+  float _x1 = CX (x1),
+    _x2 = CX (x2),
+    _y1 = CY (y1),
+    _y2 = CY (y2);
   
   float _x_M = MAX (_x1, _x2),
     _x_m = MIN (_x1, _x2),
@@ -435,10 +457,10 @@ void FillRectangle (float x1,
 		    float y2, 
 		    int couleur)
 {
-  float _x1 = x1 - _xmin,
-    _x2 = x2 - _xmin,
-    _y1 = _ymax - y1,
-    _y2 = _ymax - y2;
+  float _x1 = CX (x1),
+    _x2 = CX (x2),
+    _y1 = CY (y1),
+    _y2 = CY (y2);
   
   float _x_M = MAX (_x1, _x2),
     _x_m = MIN (_x1, _x2),
@@ -502,8 +524,8 @@ void EcritXY (float x,
 	      char *chaine,
 	      int couleur)
 {
-  int _x = x - _xmin,
-    _y = _ymax - y;
+  int _x = CX (x),
+    _y = CY (y);
   
   assert (initialized);
 

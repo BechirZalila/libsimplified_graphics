@@ -19,6 +19,14 @@
 #ifndef __GRAPHIQU_ENIS_H__
 #define __GRAPHIQU_ENIS_H__
 
+extern void Dimensions_Fenetre (int largeur, int hauteur);
+/*
+  Spécifie les dimensions de la fenêtre (en pixels). L'appel à cette
+  fonction n'est nécessaire que si les coordonnées (xmin, xmax, ymin,
+  ymax) sont trop petites ou trop pour être converties en entiers et
+  donner une fenêtres de taille raisonnable.
+ */
+
 extern void Initialisation_Graphique (float xmin, 
 				      float ymin, 
 				      float xmax, 
