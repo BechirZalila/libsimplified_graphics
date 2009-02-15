@@ -181,7 +181,7 @@ void Initialisation_Graphique (float xmin,
 		       w_height + 2,
 		       DefaultDepth (d, DefaultScreen (d)));
   XSetForeground (d, gc, WhitePixel (d, s));
-  XFillRectangle (d, bkp, gc, 0, 0, w_width, w_height);
+  XFillRectangle (d, bkp, gc, 0, 0, w_width + 2, w_height + 2);
   XSetForeground (d, gc, BlackPixel (d, s));
 
   /* Initialisation des couleurs */
