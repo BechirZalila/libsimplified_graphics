@@ -220,7 +220,7 @@ extern void Attente (void);
 
 extern void Graphiqu_ENIS_Version (void);
 /*
-  Affiche la version de la bibliothèque et des informations de
+  Affiche la version de la bibliothèque et quelques informations de
   Copyright.
 */
 

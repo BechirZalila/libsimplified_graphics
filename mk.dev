@@ -4,29 +4,43 @@
 
 include Makefile
 
-HEADERS = graphiqu_enis.h
-SOURCES = graphiqu_enis.c
-OBJECTS = $(SOURCES:.c=.o)
+C_HEADERS = graphiqu_enis.h
+C_SOURCES = graphiqu_enis.c
+C_OBJECTS = $(C_SOURCES:.c=.o)
+ADA_HEADERS = graphiqu_enis_binding.ads
+ADA_SOURCES = graphiqu_enis_binding.adb
+ADA_OBJECTS = $(ADA_SOURCES:.adb=.o)
+HEADERS = $(C_HEADERS) $(ADA_HEADERS)
+SOURCES = $(C_SOURCES) $(ADA_SOURCES)
+OBJECTS = $(C_OBJECTS) $(ADA_OBJECTS)
+ALIS    = $(ADA_SOURCES:.adb=.ali)
 LIBRARY = libsimplified_graphics.a
 
 $(EXECUTABLES): $(LIBRARY)
 
 allclean: clean
-	rm -f $(LIBRARY)
+	rm -f $(LIBRARY) *.ali b~*
 	rm -rf libsimplified_graphics*
 
 dist: allclean
 	rm -rf libsimplified_graphics
 	mkdir libsimplified_graphics
-	cp Makefile $(FICHIERS_UTILISATEUR) $(SOURCES) $(HEADERS) \
+	cp -P Makefile $(FICHIERS_UTILISATEUR) $(SOURCES) $(HEADERS) \
 	  libsimplified_graphics
 	$(MAKE) -f ../mk.dev -C libsimplified_graphics $(LIBRARY)
-	cd libsimplified_graphics && rm -f $(SOURCES) && cd ..
+	cd libsimplified_graphics && rm -f $(C_SOURCES) && cd ..
 	$(MAKE) -C libsimplified_graphics clean
 	tar czvf libsimplified_graphics.tar.gz libsimplified_graphics
 
-$(OBJECTS): $(SOURCES)
-	gcc $(CFLAGS) -c $<
+$(C_OBJECTS): $(C_SOURCES)
+	for f in $(C_SOURCES); do \
+	  gcc $(CFLAGS) -c $${f} || exit 1; \
+	done
+
+$(ADA_OBJECTS): $(ADA_SOURCES)
+	for f in $(ADA_SOURCES); do \
+	  gnat compile -gnatwae -gnatfy -gnatg $${f} || exit 1; \
+	done
 
 $(LIBRARY): $(OBJECTS)
 	rm -f $@
