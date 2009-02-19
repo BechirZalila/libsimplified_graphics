@@ -28,7 +28,7 @@ dist: allclean
 	cp -P Makefile COPYING $(FICHIERS_UTILISATEUR) $(SOURCES) $(HEADERS) \
 	  libsimplified_graphics
 	$(MAKE) -f ../mk.dev -C libsimplified_graphics $(LIBRARY)
-	cd libsimplified_graphics && rm -f $(C_SOURCES) && cd ..
+	cd libsimplified_graphics && rm -f $(SOURCES) && cd ..
 	$(MAKE) -C libsimplified_graphics clean
 	tar czvf libsimplified_graphics.tar.gz libsimplified_graphics
 
