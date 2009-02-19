@@ -22,7 +22,7 @@ package Graphiqu_ENIS_Binding is
    procedure Dimensions_Fenetre (Largeur : Integer; Hauteur : Integer);
    --  Spécifie les dimensions de la fenêtre (en pixels). L'appel à
    --  cette fonction n'est nécessaire que si les coordonnées (xmin,
-   --  xmax, ymin, ymax) sont trop petites ou trop pour être
+   --  xmax, ymin, ymax) sont trop petites ou trop grandes pour être
    --  converties en entiers et donner une fenêtres de taille
    --  raisonnable.
 
