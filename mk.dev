@@ -25,7 +25,7 @@ allclean: clean
 dist: allclean
 	rm -rf libsimplified_graphics
 	mkdir libsimplified_graphics
-	cp -P Makefile $(FICHIERS_UTILISATEUR) $(SOURCES) $(HEADERS) \
+	cp -P Makefile COPYING $(FICHIERS_UTILISATEUR) $(SOURCES) $(HEADERS) \
 	  libsimplified_graphics
 	$(MAKE) -f ../mk.dev -C libsimplified_graphics $(LIBRARY)
 	cd libsimplified_graphics && rm -f $(C_SOURCES) && cd ..

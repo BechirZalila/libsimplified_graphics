@@ -1,5 +1,12 @@
 /* $Id$ */
 
+/*
+
+  Copyright (C) 2009 Bechir Zalila <bechir.zalila@aist.enst.fr>
+  Voir le fichier COPYING pour la licence
+
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

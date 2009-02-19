@@ -1,5 +1,8 @@
 --  $Id$
 
+--  Copyright (C) 2009 Bechir Zalila <bechir.zalila@aist.enst.fr>
+--  Voir le fichier COPYING pour la licence
+
 with Interfaces.C; use Interfaces.C;
 with System;       use System;
 

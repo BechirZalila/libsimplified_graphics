@@ -14,6 +14,9 @@
 
 --  http://www.infres.enst.fr/~danzart/fiches/graphique/graphique_contenu.html
 
+--  Copyright (C) 2009 Bechir Zalila <bechir.zalila@aist.enst.fr>
+--  Voir le fichier COPYING pour la licence
+
 package Graphiqu_ENIS_Binding is
 
    procedure Dimensions_Fenetre (Largeur : Integer; Hauteur : Integer);

@@ -1,3 +1,8 @@
+--  $Id$
+
+--  Copyright (C) 2009 Bechir Zalila <bechir.zalila@aist.enst.fr>
+--  Voir le fichier COPYING pour la licence
+
 with Graphiqu_ENIS_Binding; use Graphiqu_ENIS_Binding;
 
 procedure Simple_Test_Ada is

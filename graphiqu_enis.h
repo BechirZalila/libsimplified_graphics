@@ -14,6 +14,10 @@
    libgraphiqu ne sont pas disponibles.
 
    http://www.infres.enst.fr/~danzart/fiches/graphique/graphique_contenu.html
+
+   Copyright (C) 2009 Bechir Zalila <bechir.zalila@aist.enst.fr>
+   Voir le fichier COPYING pour la licence
+
 */
 
 #ifndef __GRAPHIQU_ENIS_H__
