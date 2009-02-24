@@ -15,22 +15,26 @@ SOURCES = $(C_SOURCES) $(ADA_SOURCES)
 OBJECTS = $(C_OBJECTS) $(ADA_OBJECTS)
 ALIS    = $(ADA_SOURCES:.adb=.ali)
 LIBRARY = libsimplified_graphics.a
+HOST = $(shell gcc -dumpmachine)
+HOSTLESS_ARCHIVE_DIR = libsimplified_graphics
+ARCHIVE_DIR = $(HOSTLESS_ARCHIVE_DIR)-$(HOST)
+ARCHIVE_COMAND_ARGS = czvf $(ARCHIVE_DIR).tar.gz $(HOSTLESS_ARCHIVE_DIR)
 
 $(EXECUTABLES): $(LIBRARY)
 
 allclean: clean
 	rm -f $(LIBRARY) *.ali b~*
-	rm -rf libsimplified_graphics*
+	rm -rf $(HOSTLESS_ARCHIVE_DIR)
 
 dist: allclean
-	rm -rf libsimplified_graphics
-	mkdir libsimplified_graphics
+	rm -rf $(HOSTLESS_ARCHIVE_DIR)
+	mkdir $(HOSTLESS_ARCHIVE_DIR)
 	cp -P Makefile COPYING $(FICHIERS_UTILISATEUR) $(SOURCES) $(HEADERS) \
-	  libsimplified_graphics
-	$(MAKE) -f ../mk.dev -C libsimplified_graphics $(LIBRARY)
-	cd libsimplified_graphics && rm -f $(SOURCES) && cd ..
-	$(MAKE) -C libsimplified_graphics clean
-	tar czvf libsimplified_graphics.tar.gz libsimplified_graphics
+	  $(HOSTLESS_ARCHIVE_DIR)
+	$(MAKE) -f ../mk.dev -C $(HOSTLESS_ARCHIVE_DIR) $(LIBRARY)
+	cd $(HOSTLESS_ARCHIVE_DIR) && rm -f $(SOURCES) && cd ..
+	$(MAKE) -C $(HOSTLESS_ARCHIVE_DIR) clean
+	gtar $(ARCHIVE_COMAND_ARGS) || tar $(ARCHIVE_COMAND_ARGS)
 
 $(C_OBJECTS): $(C_SOURCES)
 	for f in $(C_SOURCES); do \

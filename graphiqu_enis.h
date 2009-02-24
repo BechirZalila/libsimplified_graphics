@@ -13,6 +13,11 @@
    bibliothèque a été complétement réécrit car les sources de
    libgraphiqu ne sont pas disponibles.
 
+   NOTE: Les noms des différentes fonctions de la bibliothèque
+   libgraphiqu (ENST) sont dans un mélange de français et d'anglais
+   qui laisse à désirer. Ils ont pourtant été gardés pour un souci de
+   retro-compatibilité.
+
    http://www.infres.enst.fr/~danzart/fiches/graphique/graphique_contenu.html
 
    Copyright (C) 2009 Bechir Zalila <bechir.zalila@aist.enst.fr>
@@ -22,6 +27,24 @@
 
 #ifndef __GRAPHIQU_ENIS_H__
 #define __GRAPHIQU_ENIS_H__
+
+enum Couleurs 
+  {Black       = 0, 
+   Blue        = 1, 
+   Green       = 2, 
+   Cyan        = 3, 
+   Red         = 4,
+   DarkMagenta = 5, 
+   Brown       = 6, 
+   LightGray   = 7, 
+   DarkGray    = 8,
+   LightBlue   = 9, 
+   LightGreen  = 10, 
+   LightCyan   = 11, 
+   Orange      = 12, 
+   Magenta     = 13, 
+   Yellow      = 14, 
+   White       = 15};
 
 extern void Dimensions_Fenetre (int largeur, int hauteur);
 /*
@@ -151,24 +174,6 @@ extern void FillRectangle (float x1,
    Remplissage avec la couleur numéro couleur d'un rectangle déterminé
    par les points de coordonnées (x1, y1) et (x2, y2).
 */
-
-enum Couleurs 
-  {Black, 
-   Blue, 
-   Green, 
-   Cyan, 
-   Red,
-   DarkMagenta, 
-   Brown, 
-   LightGray, 
-   DarkGray,
-   LightBlue, 
-   LightGreen, 
-   LightCyan, 
-   Orange, 
-   Magenta, 
-   Yellow, 
-   White};
 
 extern void CreateColorRGB (int numero,
 			    int R,

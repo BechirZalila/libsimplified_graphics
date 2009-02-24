@@ -14,10 +14,32 @@
 
 --  http://www.infres.enst.fr/~danzart/fiches/graphique/graphique_contenu.html
 
+--  NOTE: Les noms des différentes fonctions de la bibliothèque
+--  libgraphiqu (ENST) sont dans un mélange de français et d'anglais
+--  qui laisse à désirer. Ils ont pourtant été gardés pour un souci de
+--  retro-compatibilité.
+
 --  Copyright (C) 2009 Bechir Zalila <bechir.zalila@aist.enst.fr>
 --  Voir le fichier COPYING pour la licence
 
 package Graphiqu_ENIS_Binding is
+
+   Black       : constant Integer := 0;
+   Blue        : constant Integer := 1;
+   Green       : constant Integer := 2;
+   Cyan        : constant Integer := 3;
+   Red         : constant Integer := 4;
+   DarkMagenta : constant Integer := 5;
+   Brown       : constant Integer := 6;
+   LightGray   : constant Integer := 7;
+   DarkGray    : constant Integer := 8;
+   LightBlue   : constant Integer := 9;
+   LightGreen  : constant Integer := 10;
+   LightCyan   : constant Integer := 11;
+   Orange      : constant Integer := 12;
+   Magenta     : constant Integer := 13;
+   Yellow      : constant Integer := 14;
+   White       : constant Integer := 15;
 
    procedure Dimensions_Fenetre (Largeur : Integer; Hauteur : Integer);
    --  Spécifie les dimensions de la fenêtre (en pixels). L'appel à
@@ -119,23 +141,6 @@ package Graphiqu_ENIS_Binding is
                              Couleur : Integer);
    --  Remplissage avec la couleur numéro couleur d'un rectangle
    --  déterminé par les points de coordonnées (x1, y1) et (x2, y2).
-
-   Black       : constant Integer := 0;
-   Blue        : constant Integer := 1;
-   Green       : constant Integer := 2;
-   Cyan        : constant Integer := 3;
-   Red         : constant Integer := 4;
-   DarkMagenta : constant Integer := 5;
-   Brown       : constant Integer := 6;
-   LightGray   : constant Integer := 7;
-   DarkGray    : constant Integer := 8;
-   LightBlue   : constant Integer := 9;
-   LightGreen  : constant Integer := 10;
-   LightCyan   : constant Integer := 11;
-   Orange      : constant Integer := 12;
-   Magenta     : constant Integer := 13;
-   Yellow      : constant Integer := 14;
-   White       : constant Integer := 15;
 
    procedure Create_Color_RGB (Numero : Integer;
                                R      : Integer;
