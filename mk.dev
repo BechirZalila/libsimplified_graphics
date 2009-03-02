@@ -10,9 +10,9 @@ C_OBJECTS = $(C_SOURCES:.c=.o)
 ADA_HEADERS = graphiqu_enis_binding.ads
 ADA_SOURCES = graphiqu_enis_binding.adb
 ADA_OBJECTS = $(ADA_SOURCES:.adb=.o)
-HEADERS = $(C_HEADERS) $(ADA_HEADERS)
-SOURCES = $(C_SOURCES) $(ADA_SOURCES)
-OBJECTS = $(C_OBJECTS) $(ADA_OBJECTS)
+HEADERS := $(C_HEADERS) $(ADA_HEADERS)
+SOURCES := $(C_SOURCES) $(ADA_SOURCES)
+OBJECTS := $(C_OBJECTS) $(ADA_OBJECTS)
 ALIS    = $(ADA_SOURCES:.adb=.ali)
 LIBRARY = libsimplified_graphics.a
 HOST = $(shell gcc -dumpmachine)
@@ -26,12 +26,40 @@ allclean: clean
 	rm -f $(LIBRARY) *.ali b~*
 	rm -rf $(HOSTLESS_ARCHIVE_DIR)
 
-dist: allclean
+dist: \
+	HEADERS := $(C_HEADERS) $(ADA_HEADERS)
+dist: \
+	SOURCES := $(C_SOURCES) $(ADA_SOURCES)
+dist: \
+	OBJECTS := $(C_OBJECTS) $(ADA_OBJECTS)
+dist: \
+	FICHIERS_UTILISATEUR := $(FICHIERS_UTILISATEUR_C) \
+                                $(FICHIERS_UTILISATEUR_ADA)
+
+dist-c: \
+	HEADERS := $(C_HEADERS)
+dist-c: \
+	SOURCES := $(C_SOURCES)
+dist-c: \
+	OBJECTS := $(C_OBJECTS)
+dist-c: \
+	FICHIERS_UTILISATEUR := $(FICHIERS_UTILISATEUR_C)
+
+dist-ada: \
+	HEADERS := $(ADA_HEADERS)
+dist-ada: \
+	SOURCES := $(C_SOURCES) $(ADA_SOURCES)
+dist-ada: \
+	OBJECTS := $(C_OBJECTS) $(ADA_OBJECTS)
+dist-ada: \
+	FICHIERS_UTILISATEUR := $(FICHIERS_UTILISATEUR_ADA)
+
+dist dist-%: allclean
 	rm -rf $(HOSTLESS_ARCHIVE_DIR)
 	mkdir $(HOSTLESS_ARCHIVE_DIR)
 	cp -P Makefile COPYING $(FICHIERS_UTILISATEUR) $(SOURCES) $(HEADERS) \
 	  $(HOSTLESS_ARCHIVE_DIR)
-	$(MAKE) -f ../mk.dev -C $(HOSTLESS_ARCHIVE_DIR) $(LIBRARY)
+	$(MAKE) -f ../mk.dev -C $(HOSTLESS_ARCHIVE_DIR) "HEADERS=$(HEADERS)" "SOURCES=$(SOURCES)" "OBJECTS=$(OBJECTS)" $(LIBRARY)
 	cd $(HOSTLESS_ARCHIVE_DIR) && rm -f $(SOURCES) && cd ..
 	$(MAKE) -C $(HOSTLESS_ARCHIVE_DIR) clean
 	gtar $(ARCHIVE_COMAND_ARGS) || tar $(ARCHIVE_COMAND_ARGS)

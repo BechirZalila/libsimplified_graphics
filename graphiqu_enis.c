@@ -555,7 +555,9 @@ void Attente (void)
   char c = '\0';
 
   assert (initialized);
-  
+
+  fpurge (stdin);
+
   while (c != '\n') {
     scanf ("%c", &c);
   }
