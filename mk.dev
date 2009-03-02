@@ -64,10 +64,10 @@ dist-ada: \
 dist dist-%: allclean
 	rm -rf $(HOSTLESS_ARCHIVE_DIR)
 	mkdir $(HOSTLESS_ARCHIVE_DIR)
-	if test "$(MODE)" == "ada"; then\
+	if test "$(MODE)" = "ada"; then\
 	  cat Makefile | grep -v '^FICHIERS_UTILISATEUR_C' > \
 	     $(HOSTLESS_ARCHIVE_DIR)/Makefile; \
-	elif test "$(MODE)" == "c"; then\
+	elif test "$(MODE)" = "c"; then\
 	  cat Makefile | grep -v '^FICHIERS_UTILISATEUR_ADA' > \
 	     $(HOSTLESS_ARCHIVE_DIR)/Makefile; \
 	else \
