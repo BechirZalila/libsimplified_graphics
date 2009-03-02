@@ -18,7 +18,8 @@ LIBRARY = libsimplified_graphics.a
 HOST = $(shell gcc -dumpmachine)
 HOSTLESS_ARCHIVE_DIR = libsimplified_graphics
 ARCHIVE_DIR = $(HOSTLESS_ARCHIVE_DIR)-$(HOST)
-ARCHIVE_COMAND_ARGS = czvf $(ARCHIVE_DIR).tar.gz $(HOSTLESS_ARCHIVE_DIR)
+MODE := all
+ARCHIVE_COMAND_ARGS = czvf $(ARCHIVE_DIR)-$(MODE).tar.gz $(HOSTLESS_ARCHIVE_DIR)
 
 $(EXECUTABLES): $(LIBRARY)
 
@@ -35,6 +36,8 @@ dist: \
 dist: \
 	FICHIERS_UTILISATEUR := $(FICHIERS_UTILISATEUR_C) \
                                 $(FICHIERS_UTILISATEUR_ADA)
+dist: \
+	MODE := all
 
 dist-c: \
 	HEADERS := $(C_HEADERS)
@@ -44,6 +47,8 @@ dist-c: \
 	OBJECTS := $(C_OBJECTS)
 dist-c: \
 	FICHIERS_UTILISATEUR := $(FICHIERS_UTILISATEUR_C)
+dist-c: \
+	MODE := c
 
 dist-ada: \
 	HEADERS := $(ADA_HEADERS)
@@ -53,11 +58,22 @@ dist-ada: \
 	OBJECTS := $(C_OBJECTS) $(ADA_OBJECTS)
 dist-ada: \
 	FICHIERS_UTILISATEUR := $(FICHIERS_UTILISATEUR_ADA)
+dist-ada: \
+	MODE := ada
 
 dist dist-%: allclean
 	rm -rf $(HOSTLESS_ARCHIVE_DIR)
 	mkdir $(HOSTLESS_ARCHIVE_DIR)
-	cp -P Makefile COPYING $(FICHIERS_UTILISATEUR) $(SOURCES) $(HEADERS) \
+	if test "$(MODE)" == "ada"; then\
+	  cat Makefile | grep -v '^FICHIERS_UTILISATEUR_C' > \
+	     $(HOSTLESS_ARCHIVE_DIR)/Makefile; \
+	elif test "$(MODE)" == "c"; then\
+	  cat Makefile | grep -v '^FICHIERS_UTILISATEUR_ADA' > \
+	     $(HOSTLESS_ARCHIVE_DIR)/Makefile; \
+	else \
+	  cat Makefile > $(HOSTLESS_ARCHIVE_DIR)/Makefile; \
+	fi
+	cp -P COPYING $(FICHIERS_UTILISATEUR) $(SOURCES) $(HEADERS) \
 	  $(HOSTLESS_ARCHIVE_DIR)
 	$(MAKE) -f ../mk.dev -C $(HOSTLESS_ARCHIVE_DIR) "HEADERS=$(HEADERS)" "SOURCES=$(SOURCES)" "OBJECTS=$(OBJECTS)" $(LIBRARY)
 	cd $(HOSTLESS_ARCHIVE_DIR) && rm -f $(SOURCES) && cd ..
