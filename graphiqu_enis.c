@@ -552,12 +552,13 @@ void Ecrit (char *chaine,
 
 void Attente (void)
 {
-  char c = '\0';
+  char c;
 
   assert (initialized);
 
-  fpurge (stdin);
+  while ((c = fgetc (stdin)) != '\n' && c != EOF);
 
+  c = '\0';
   while (c != '\n') {
     scanf ("%c", &c);
   }
