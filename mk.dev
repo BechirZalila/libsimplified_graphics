@@ -73,7 +73,7 @@ dist dist-%: allclean
 	else \
 	  cat Makefile > $(HOSTLESS_ARCHIVE_DIR)/Makefile; \
 	fi
-	cp -P COPYING $(FICHIERS_UTILISATEUR) $(SOURCES) $(HEADERS) \
+	cp -p COPYING $(FICHIERS_UTILISATEUR) $(SOURCES) $(HEADERS) \
 	  $(HOSTLESS_ARCHIVE_DIR)
 	$(MAKE) -f ../mk.dev -C $(HOSTLESS_ARCHIVE_DIR) "HEADERS=$(HEADERS)" "SOURCES=$(SOURCES)" "OBJECTS=$(OBJECTS)" $(LIBRARY)
 	cd $(HOSTLESS_ARCHIVE_DIR) && rm -f $(SOURCES) && cd ..

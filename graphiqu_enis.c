@@ -636,7 +636,7 @@ void init_couleurs (void) {
 		    162, 168, 175, 181, 187, 193, 200, 206, 212, 218, 225, 
 		    231, 237, 243, 249, 255};
 
-  /* États de la machines à états qui génère le dégradé */
+  /* États de la machine à états qui génère le dégradé */
   enum p_states {i_green,         /* Augmente G à R et B nuls */
 		 s_green_i_red,   /* Augmente R à G maximum et B nul */
 		 s_red_d_green,   /* Diminue G à R maximum et B nul */
