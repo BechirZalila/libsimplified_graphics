@@ -52,7 +52,7 @@ package Graphiqu_ENIS_Binding is
                                        Y_Min : Float;
                                        X_Max : Float;
                                        Y_Max : Float);
-   --   Cette fonction ouvre une fenêtre graphique dont les dimensions
+   --  Cette fonction ouvre une fenêtre graphique dont les dimensions
    --  sont délimitées par le rectangle (xmin, ymin, xmax, ymax). Les
    --  coordonnées sont des coordonnées utilisateurs (nombres
    --  réels). (xmin, ymin) est le point en bas à gauche et (xmax,
