@@ -1,0 +1,232 @@
+------------------------------------------------------------------------
+r1206 | zalila | 2009-05-02 12:01:47 +0100 (Sam, 02 mai 2009) | 2 lines
+Changed paths:
+   M /work/libsimplified_graphics/mk.dev
+
+	* Add packaging option for sources
+
+------------------------------------------------------------------------
+r1184 | zalila | 2009-04-24 21:40:00 +0100 (Ven, 24 avr 2009) | 2 lines
+Changed paths:
+   M /work/libsimplified_graphics/graphiqu_enis_binding.ads
+
+	* Align comment properly
+
+------------------------------------------------------------------------
+r1163 | zalila | 2009-03-05 20:43:25 +0100 (Jeu, 05 mar 2009) | 2 lines
+Changed paths:
+   M /work/libsimplified_graphics/graphiqu_enis.c
+   M /work/libsimplified_graphics/mk.dev
+
+	* Typos
+
+------------------------------------------------------------------------
+r1159 | zalila | 2009-03-02 23:15:15 +0100 (Lun, 02 mar 2009) | 2 lines
+Changed paths:
+   M /work/libsimplified_graphics/mk.dev
+
+	* Portable test
+
+------------------------------------------------------------------------
+r1158 | zalila | 2009-03-02 23:12:19 +0100 (Lun, 02 mar 2009) | 2 lines
+Changed paths:
+   M /work/libsimplified_graphics/graphiqu_enis.c
+
+	* Use a more portable way to puge the stdin buffer
+
+------------------------------------------------------------------------
+r1157 | zalila | 2009-03-02 22:56:10 +0100 (Lun, 02 mar 2009) | 2 lines
+Changed paths:
+   M /work/libsimplified_graphics/mk.dev
+
+	* Better packaging
+
+------------------------------------------------------------------------
+r1154 | zalila | 2009-03-02 22:42:27 +0100 (Lun, 02 mar 2009) | 3 lines
+Changed paths:
+   M /work/libsimplified_graphics/Makefile
+   M /work/libsimplified_graphics/graphiqu_enis.c
+   M /work/libsimplified_graphics/mk.dev
+
+	* Fixed a bug in Attente. Purge the stdin biuffer before waiting
+	Better packaging (C and Ada are separated)
+
+------------------------------------------------------------------------
+r1152 | zalila | 2009-02-24 20:39:03 +0100 (Mar, 24 fév 2009) | 2 lines
+Changed paths:
+   M /work/libsimplified_graphics/graphiqu_enis.h
+   M /work/libsimplified_graphics/graphiqu_enis_binding.ads
+   M /work/libsimplified_graphics/mk.dev
+
+	* minor reorganization
+
+------------------------------------------------------------------------
+r1150 | zalila | 2009-02-19 21:05:05 +0100 (Jeu, 19 fév 2009) | 2 lines
+Changed paths:
+   M /work/libsimplified_graphics/graphiqu_enis.h
+   M /work/libsimplified_graphics/graphiqu_enis_binding.ads
+
+	* Typos
+
+------------------------------------------------------------------------
+r1149 | zalila | 2009-02-19 20:56:19 +0100 (Jeu, 19 fév 2009) | 2 lines
+Changed paths:
+   M /work/libsimplified_graphics/mk.dev
+
+	* Do not package the ada body
+
+------------------------------------------------------------------------
+r1148 | zalila | 2009-02-19 20:52:22 +0100 (Jeu, 19 fév 2009) | 2 lines
+Changed paths:
+   M /work/libsimplified_graphics/COPYING
+
+	* Minor reformatting
+
+------------------------------------------------------------------------
+r1147 | zalila | 2009-02-19 20:50:08 +0100 (Jeu, 19 fév 2009) | 2 lines
+Changed paths:
+   A /work/libsimplified_graphics/COPYING
+   M /work/libsimplified_graphics/graphiqu_enis.c
+   M /work/libsimplified_graphics/graphiqu_enis.h
+   M /work/libsimplified_graphics/graphiqu_enis_binding.adb
+   M /work/libsimplified_graphics/graphiqu_enis_binding.ads
+   M /work/libsimplified_graphics/mk.dev
+   M /work/libsimplified_graphics/simple_test.c
+   M /work/libsimplified_graphics/simple_test_ada.adb
+
+	* Copyright
+
+------------------------------------------------------------------------
+r1146 | zalila | 2009-02-19 20:33:41 +0100 (Jeu, 19 fév 2009) | 2 lines
+Changed paths:
+   M /work/libsimplified_graphics/Makefile
+   M /work/libsimplified_graphics/graphiqu_enis.h
+   A /work/libsimplified_graphics/graphiqu_enis_binding.adb
+   A /work/libsimplified_graphics/graphiqu_enis_binding.ads
+   M /work/libsimplified_graphics/mk.dev
+   A /work/libsimplified_graphics/simple_test_ada.adb
+
+	* Binding Ada pour la bibliothèque graphique
+
+------------------------------------------------------------------------
+r1145 | zalila | 2009-02-15 12:03:18 +0100 (Dim, 15 fév 2009) | 5 lines
+Changed paths:
+   M /work/enst_c/monproj/geomet.c
+   M /work/enst_c/monproj/geomet.h
+   M /work/enst_c/monproj/main.c
+   M /work/enst_c/monproj/outil_math.c
+   M /work/enst_c/monproj/outil_math.h
+   M /work/enst_c/monproj/utils.c
+   M /work/enst_c/monproj/utils.h
+   M /work/enst_c/monproj/var.h
+   M /work/enst_c/tp_algo/exer6.c
+   M /work/enst_c/tp_algo/ordonn2.c
+   M /work/libsimplified_graphics/graphiqu_enis.c
+
+	* libsimplified_graphics : Finiched the integration of
+	  Dimensions_Fenetre
+	* enst_c : Adapted the remaining graphical program to
+	  Dimensions_Fenetre
+
+------------------------------------------------------------------------
+r1142 | zalila | 2009-02-10 12:20:22 +0100 (Mar, 10 fév 2009) | 3 lines
+Changed paths:
+   M /work/libsimplified_graphics/graphiqu_enis.c
+   M /work/libsimplified_graphics/graphiqu_enis.h
+   M /work/libsimplified_graphics/simple_test.c
+
+	* A new function to make the windows size and the coordinate system
+	separated and independant
+
+------------------------------------------------------------------------
+r1130 | zalila | 2009-02-03 20:20:09 +0100 (Mar, 03 fév 2009) | 4 lines
+Changed paths:
+   M /work/libsimplified_graphics/graphiqu_enis.c
+   M /work/libsimplified_graphics/graphiqu_enis.h
+
+	* Version 1.0
+	* Activation du threads de raffraichissement sur Mac OS X en 
+	utilisant les routines thread-safe de XLib
+
+------------------------------------------------------------------------
+r1126 | zalila | 2009-02-01 13:44:40 +0100 (Dim, 01 fév 2009) | 2 lines
+Changed paths:
+   M /work/libsimplified_graphics/simple_test.c
+
+	* Typo
+
+------------------------------------------------------------------------
+r1125 | zalila | 2009-02-01 13:42:30 +0100 (Dim, 01 fév 2009) | 3 lines
+Changed paths:
+   M /work/libsimplified_graphics/simple_test.c
+
+	* Documentation
+
+
+------------------------------------------------------------------------
+r1124 | zalila | 2009-02-01 13:24:44 +0100 (Dim, 01 fév 2009) | 2 lines
+Changed paths:
+   M /work/libsimplified_graphics/Makefile
+   M /work/libsimplified_graphics/mk.dev
+
+	* Paufinage
+
+------------------------------------------------------------------------
+r1122 | zalila | 2009-01-31 18:41:38 +0100 (Sam, 31 jan 2009) | 3 lines
+Changed paths:
+   M /work/libsimplified_graphics/Makefile
+   M /work/libsimplified_graphics/mk.dev
+
+	* Reorganization
+
+
+------------------------------------------------------------------------
+r1121 | zalila | 2009-01-31 18:40:24 +0100 (Sam, 31 jan 2009) | 2 lines
+Changed paths:
+   M /work/libsimplified_graphics/Makefile
+   M /work/libsimplified_graphics/mk.dev
+
+	* Reorganization
+
+------------------------------------------------------------------------
+r1120 | zalila | 2009-01-31 18:39:18 +0100 (Sam, 31 jan 2009) | 2 lines
+Changed paths:
+   M /work/libsimplified_graphics/Makefile
+   A /work/libsimplified_graphics/mk.dev
+
+	* Fin du packaging
+
+------------------------------------------------------------------------
+r1119 | zalila | 2009-01-31 18:35:13 +0100 (Sam, 31 jan 2009) | 2 lines
+Changed paths:
+   M /work/libsimplified_graphics/Makefile
+
+	* Package. Almost finished
+
+------------------------------------------------------------------------
+r1118 | zalila | 2009-01-31 18:15:32 +0100 (Sam, 31 jan 2009) | 2 lines
+Changed paths:
+   M /work/libsimplified_graphics/Makefile
+
+	* Build a library
+
+------------------------------------------------------------------------
+r1117 | zalila | 2009-01-31 18:05:52 +0100 (Sam, 31 jan 2009) | 2 lines
+Changed paths:
+   M /work/libsimplified_graphics/graphiqu_enis.c
+
+	* Modification de l'épaisseur de la ligne
+
+------------------------------------------------------------------------
+r1116 | zalila | 2009-01-31 17:53:48 +0100 (Sam, 31 jan 2009) | 2 lines
+Changed paths:
+   A /work/libsimplified_graphics
+   A /work/libsimplified_graphics/Makefile
+   A /work/libsimplified_graphics/demo.c
+   A /work/libsimplified_graphics/graphiqu_enis.c
+   A /work/libsimplified_graphics/graphiqu_enis.h
+   A /work/libsimplified_graphics/simple_test.c
+
+	* Bibliothèque graphique simplifiée utilisant XLib
+
+------------------------------------------------------------------------
