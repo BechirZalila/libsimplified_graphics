@@ -75,9 +75,10 @@ dist dist-%: allclean
 	else \
 	  cat Makefile > $(HOSTLESS_ARCHIVE_DIR)/Makefile; \
 	fi
-	cp -p COPYING $(FICHIERS_UTILISATEUR) $(SOURCES) $(HEADERS) \
+	cp -p COPYING ChangeLog $(FICHIERS_UTILISATEUR) $(SOURCES) $(HEADERS) \
 	  $(HOSTLESS_ARCHIVE_DIR)
-	$(MAKE) -f ../mk.dev -C $(HOSTLESS_ARCHIVE_DIR) "HEADERS=$(HEADERS)" "SOURCES=$(SOURCES)" "OBJECTS=$(OBJECTS)" $(LIBRARY)
+	$(MAKE) -f ../mk.dev -C $(HOSTLESS_ARCHIVE_DIR) "HEADERS=$(HEADERS)" \
+	  "SOURCES=$(SOURCES)" "OBJECTS=$(OBJECTS)" $(LIBRARY)
 	cd $(HOSTLESS_ARCHIVE_DIR) && rm -f $(SOURCES) && cd ..
 	$(MAKE) -C $(HOSTLESS_ARCHIVE_DIR) clean
 	gtar $(ARCHIVE_COMAND_ARGS) || tar $(ARCHIVE_COMAND_ARGS)
@@ -94,10 +95,12 @@ srcdist srcdist-%: allclean
 	else \
 	  cat Makefile > $(SRC_ARCHIVE_DIR)/Makefile; \
 	fi
-	cp -p COPYING $(FICHIERS_UTILISATEUR) $(SOURCES) $(HEADERS) \
+	cp -p COPYING ChangeLog $(FICHIERS_UTILISATEUR) $(SOURCES) $(HEADERS) \
 	  $(SRC_ARCHIVE_DIR)
-	$(MAKE) -f ../mk.dev -C $(SRC_ARCHIVE_DIR) "HEADERS=$(HEADERS)" "SOURCES=$(SOURCES)" "OBJECTS=$(OBJECTS)" $(LIBRARY)
-	$(MAKE) -f ../mk.dev -C $(SRC_ARCHIVE_DIR) "HEADERS=$(HEADERS)" "SOURCES=$(SOURCES)" "OBJECTS=$(OBJECTS)" allclean
+	$(MAKE) -f ../mk.dev -C $(SRC_ARCHIVE_DIR) "HEADERS=$(HEADERS)" \
+	  "SOURCES=$(SOURCES)" "OBJECTS=$(OBJECTS)" $(LIBRARY)
+	$(MAKE) -f ../mk.dev -C $(SRC_ARCHIVE_DIR) "HEADERS=$(HEADERS)" \
+	  "SOURCES=$(SOURCES)" "OBJECTS=$(OBJECTS)" allclean
 	cp -p mk.dev $(SRC_ARCHIVE_DIR)
 	gtar $(SRC_COMAND_ARGS) || tar $(SRC_COMAND_ARGS)
 
