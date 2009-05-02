@@ -18,47 +18,49 @@ LIBRARY = libsimplified_graphics.a
 HOST = $(shell gcc -dumpmachine)
 HOSTLESS_ARCHIVE_DIR = libsimplified_graphics
 ARCHIVE_DIR = $(HOSTLESS_ARCHIVE_DIR)-$(HOST)
+SRC_ARCHIVE_DIR = $(HOSTLESS_ARCHIVE_DIR)-$(MODE)-src
 MODE := all
 ARCHIVE_COMAND_ARGS = czvf $(ARCHIVE_DIR)-$(MODE).tar.gz $(HOSTLESS_ARCHIVE_DIR)
+SRC_COMAND_ARGS = czvf $(SRC_ARCHIVE_DIR).tar.gz $(SRC_ARCHIVE_DIR)
 
 $(EXECUTABLES): $(LIBRARY)
 
 allclean: clean
 	rm -f $(LIBRARY) *.ali b~*
-	rm -rf $(HOSTLESS_ARCHIVE_DIR)
+	rm -rf $(HOSTLESS_ARCHIVE_DIR)*/ $(SRC_ARCHIVE_DIR)*/
 
-dist: \
+srcdist dist: \
 	HEADERS := $(C_HEADERS) $(ADA_HEADERS)
-dist: \
+srcdist dist: \
 	SOURCES := $(C_SOURCES) $(ADA_SOURCES)
-dist: \
+srcdist dist: \
 	OBJECTS := $(C_OBJECTS) $(ADA_OBJECTS)
-dist: \
+srcdist dist: \
 	FICHIERS_UTILISATEUR := $(FICHIERS_UTILISATEUR_C) \
                                 $(FICHIERS_UTILISATEUR_ADA)
-dist: \
+srcdist dist: \
 	MODE := all
 
-dist-c: \
+srcdist-c dist-c: \
 	HEADERS := $(C_HEADERS)
-dist-c: \
+srcdist-c dist-c: \
 	SOURCES := $(C_SOURCES)
-dist-c: \
+srcdist-c dist-c: \
 	OBJECTS := $(C_OBJECTS)
-dist-c: \
+srcdist-c dist-c: \
 	FICHIERS_UTILISATEUR := $(FICHIERS_UTILISATEUR_C)
-dist-c: \
+srcdist-c dist-c: \
 	MODE := c
 
-dist-ada: \
+srcdist-ada dist-ada: \
 	HEADERS := $(ADA_HEADERS)
-dist-ada: \
+srcdist-ada dist-ada: \
 	SOURCES := $(C_SOURCES) $(ADA_SOURCES)
-dist-ada: \
+srcdist-ada dist-ada: \
 	OBJECTS := $(C_OBJECTS) $(ADA_OBJECTS)
-dist-ada: \
+srcdist-ada dist-ada: \
 	FICHIERS_UTILISATEUR := $(FICHIERS_UTILISATEUR_ADA)
-dist-ada: \
+srcdist-ada dist-ada: \
 	MODE := ada
 
 dist dist-%: allclean
@@ -79,6 +81,25 @@ dist dist-%: allclean
 	cd $(HOSTLESS_ARCHIVE_DIR) && rm -f $(SOURCES) && cd ..
 	$(MAKE) -C $(HOSTLESS_ARCHIVE_DIR) clean
 	gtar $(ARCHIVE_COMAND_ARGS) || tar $(ARCHIVE_COMAND_ARGS)
+
+srcdist srcdist-%: allclean
+	rm -rf $(SRC_ARCHIVE_DIR)
+	mkdir $(SRC_ARCHIVE_DIR)
+	if test "$(MODE)" = "ada"; then\
+	  cat Makefile | grep -v '^FICHIERS_UTILISATEUR_C' > \
+	     $(SRC_ARCHIVE_DIR)/Makefile; \
+	elif test "$(MODE)" = "c"; then\
+	  cat Makefile | grep -v '^FICHIERS_UTILISATEUR_ADA' > \
+	     $(SRC_ARCHIVE_DIR)/Makefile; \
+	else \
+	  cat Makefile > $(SRC_ARCHIVE_DIR)/Makefile; \
+	fi
+	cp -p COPYING $(FICHIERS_UTILISATEUR) $(SOURCES) $(HEADERS) \
+	  $(SRC_ARCHIVE_DIR)
+	$(MAKE) -f ../mk.dev -C $(SRC_ARCHIVE_DIR) "HEADERS=$(HEADERS)" "SOURCES=$(SOURCES)" "OBJECTS=$(OBJECTS)" $(LIBRARY)
+	$(MAKE) -f ../mk.dev -C $(SRC_ARCHIVE_DIR) "HEADERS=$(HEADERS)" "SOURCES=$(SOURCES)" "OBJECTS=$(OBJECTS)" allclean
+	cp -p mk.dev $(SRC_ARCHIVE_DIR)
+	gtar $(SRC_COMAND_ARGS) || tar $(SRC_COMAND_ARGS)
 
 $(C_OBJECTS): $(C_SOURCES)
 	for f in $(C_SOURCES); do \
