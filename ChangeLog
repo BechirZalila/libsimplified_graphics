@@ -1,4 +1,18 @@
 ------------------------------------------------------------------------
+r1208 | zalila | 2009-05-02 17:48:18 +0100 (Sam, 02 mai 2009) | 2 lines
+Changed paths:
+   M /work/libsimplified_graphics/mk.dev
+
+	* Package changelog file
+
+------------------------------------------------------------------------
+r1207 | zalila | 2009-05-02 17:45:26 +0100 (Sam, 02 mai 2009) | 2 lines
+Changed paths:
+   A /work/libsimplified_graphics/ChangeLog
+
+	* Changelog
+
+------------------------------------------------------------------------
 r1206 | zalila | 2009-05-02 12:01:47 +0100 (Sam, 02 mai 2009) | 2 lines
 Changed paths:
    M /work/libsimplified_graphics/mk.dev
