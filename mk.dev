@@ -4,24 +4,31 @@
 
 include Makefile
 
-C_HEADERS = graphiqu_enis.h
-C_SOURCES = graphiqu_enis.c
-C_OBJECTS = $(C_SOURCES:.c=.o)
+VERSION = 1.0
+
+C_HEADERS   = graphiqu_enis.h
+C_SOURCES   = graphiqu_enis.c
+C_OBJECTS   = $(C_SOURCES:.c=.o)
 ADA_HEADERS = graphiqu_enis_binding.ads
 ADA_SOURCES = graphiqu_enis_binding.adb
 ADA_OBJECTS = $(ADA_SOURCES:.adb=.o)
+
 HEADERS := $(C_HEADERS) $(ADA_HEADERS)
 SOURCES := $(C_SOURCES) $(ADA_SOURCES)
 OBJECTS := $(C_OBJECTS) $(ADA_OBJECTS)
+
 ALIS    = $(ADA_SOURCES:.adb=.ali)
 LIBRARY = libsimplified_graphics.a
-HOST = $(shell gcc -dumpmachine)
-HOSTLESS_ARCHIVE_DIR = libsimplified_graphics
-ARCHIVE_DIR = $(HOSTLESS_ARCHIVE_DIR)-$(HOST)
-SRC_ARCHIVE_DIR = $(HOSTLESS_ARCHIVE_DIR)-$(MODE)-src
+HOST    = $(shell gcc -dumpmachine)
+
+HOSTLESS_ARCHIVE_DIR = libsimplified_graphics-$(VERSION)
+ARCHIVE_DIR          = $(HOSTLESS_ARCHIVE_DIR)-$(HOST)
+SRC_ARCHIVE_DIR      = $(HOSTLESS_ARCHIVE_DIR)-$(MODE)-src
+
 MODE := all
+
 ARCHIVE_COMAND_ARGS = czvf $(ARCHIVE_DIR)-$(MODE).tar.gz $(HOSTLESS_ARCHIVE_DIR)
-SRC_COMAND_ARGS = czvf $(SRC_ARCHIVE_DIR).tar.gz $(SRC_ARCHIVE_DIR)
+SRC_COMAND_ARGS     = czvf $(SRC_ARCHIVE_DIR).tar.gz $(SRC_ARCHIVE_DIR)
 
 $(EXECUTABLES): $(LIBRARY)
 
@@ -118,3 +125,9 @@ $(LIBRARY): $(OBJECTS)
 	rm -f $@
 	ar rcs $@ $(OBJECTS)
 	ranlib $@
+
+### Local Variables:
+### mode: makefile
+### End:
+
+# EOF
