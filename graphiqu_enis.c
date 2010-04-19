@@ -21,7 +21,7 @@
 #define CX(x) (w_width * ((x) - _xmin) / (_xmax - _xmin))
 #define CY(y) (w_height - w_height * ((y) - _ymin) / (_ymax - _ymin))
 
-char graphiqu_enis_version_string [] = "1.1";
+char graphiqu_enis_version_string [] = "1.2";
 
 int initialized = 0;
 
