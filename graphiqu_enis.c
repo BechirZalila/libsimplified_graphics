@@ -47,7 +47,7 @@ XFontStruct* font_info = NULL; /* Police courante */
 /* Nom générique de police redimensionnable. Le '%d' sera remplacé
    pour correspondre à la taille choisie par l'utilisateur. */
 char* font_name_template 
-  = "-adobe-helvetica-medium-r-normal--0-%d-75-75-p-0-iso8859-1";
+  = "-*-*-medium-r-normal--0-%d-75-75-p-0-iso8859-1";
 
 int hauteur_texte = 10; /* Hauteur par défaut du texte */
 
