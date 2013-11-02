@@ -162,7 +162,7 @@ package Graphiqu_ENIS_Binding is
 
    procedure Deplace (X_1 : Float;
                       Y_1 : Float);
-   --  On se positiojnne au point de coordonnées (x, y).
+   --  On se positionne au point de coordonnées (x, y).
 
    procedure Ecrit (Chaine  : String;
                     Couleur : Integer);
