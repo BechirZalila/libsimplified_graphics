@@ -21,6 +21,7 @@ EXECUTABLES = $(EXECUTABLES_C) $(EXECUTABLES_ADA)
 
 ALIS_UTILISATEUR = $(FICHIERS_UTILISATEUR_ADA:.adb=.ali)
 
+CC      := gcc
 CFLAGS  := -g -Wall -Werror -Wextra
 LDFLAGS := -L/usr/X11/lib -lX11 -lpthread
 
@@ -29,8 +30,8 @@ CUSTOM_LDFLAGS = -L. -lsimplified_graphics
 all: $(EXECUTABLES)
 
 $(EXECUTABLES_C): $(FICHIERS_UTILISATEUR_C)
-	gcc $(CFLAGS) -c $@.c
-	gcc -o $@ $@.o $(CUSTOM_LDFLAGS) $(LDFLAGS)
+	$(CC) $(CFLAGS) -c $@.c
+	$(CC) -o $@ $@.o $(CUSTOM_LDFLAGS) $(LDFLAGS)
 
 $(EXECUTABLES_ADA): $(FICHIERS_UTILISATEUR_ADA)
 	gnat compile $@.adb -cargs $(CFLAGS)

@@ -19,7 +19,8 @@ OBJECTS := $(C_OBJECTS) $(ADA_OBJECTS)
 
 ALIS    = $(ADA_SOURCES:.adb=.ali)
 LIBRARY = libsimplified_graphics.a
-HOST    = $(shell gcc -dumpmachine)
+CC      = gcc
+HOST    = $(shell $(CC) -dumpmachine)
 
 HOSTLESS_ARCHIVE_DIR = libsimplified_graphics-$(VERSION)
 ARCHIVE_DIR          = $(HOSTLESS_ARCHIVE_DIR)-$(HOST)
@@ -88,7 +89,7 @@ dist dist-%: allclean
 	  "SOURCES=$(SOURCES)" "OBJECTS=$(OBJECTS)" $(LIBRARY)
 	cd $(HOSTLESS_ARCHIVE_DIR) && rm -f $(SOURCES) && cd ..
 	$(MAKE) -C $(HOSTLESS_ARCHIVE_DIR) clean
-	gtar $(ARCHIVE_COMAND_ARGS) || tar $(ARCHIVE_COMAND_ARGS)
+	gnutar $(ARCHIVE_COMAND_ARGS) || gtar $(ARCHIVE_COMAND_ARGS) || tar $(ARCHIVE_COMAND_ARGS)
 
 srcdist srcdist-%: allclean
 	rm -rf $(SRC_ARCHIVE_DIR)
@@ -109,11 +110,11 @@ srcdist srcdist-%: allclean
 	$(MAKE) -f ../mk.dev -C $(SRC_ARCHIVE_DIR) "HEADERS=$(HEADERS)" \
 	  "SOURCES=$(SOURCES)" "OBJECTS=$(OBJECTS)" allclean
 	cp -p mk.dev $(SRC_ARCHIVE_DIR)
-	gtar $(SRC_COMAND_ARGS) || tar $(SRC_COMAND_ARGS)
+	gnutar $(SRC_COMAND_ARGS) || gtar $(SRC_COMAND_ARGS) || tar $(SRC_COMAND_ARGS)
 
 $(C_OBJECTS): $(C_SOURCES)
 	for f in $(C_SOURCES); do \
-	  gcc $(CFLAGS) -c $${f} || exit 1; \
+	  $(CC) $(CFLAGS) -c $${f} || exit 1; \
 	done
 
 $(ADA_OBJECTS): $(ADA_SOURCES)
