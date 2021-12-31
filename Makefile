@@ -22,8 +22,8 @@ EXECUTABLES = $(EXECUTABLES_C) $(EXECUTABLES_ADA)
 ALIS_UTILISATEUR = $(FICHIERS_UTILISATEUR_ADA:.adb=.ali)
 
 CC      := gcc
-CFLAGS  := -g -Wall -Werror -Wextra
-LDFLAGS := -L/usr/X11/lib -lX11 -lpthread
+CFLAGS  := -g -Wall -Werror -Wextra `pkg-config x11 --cflags`
+LDFLAGS := `pkg-config x11 --libs` -lpthread
 
 CUSTOM_LDFLAGS = -L. -lsimplified_graphics
 
